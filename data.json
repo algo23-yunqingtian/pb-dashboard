@@ -145,7 +145,7 @@
       ],
       "as_of": "2026-08-18"
     },
-    "engine_version": "fetch_v3 + P0-P4"
+    "engine_version": "fetch_v3 + P0-P4 (L0–L6 full)"
   },
   "realtime": {
     "code": "PB",
@@ -810,11 +810,104 @@
       "sharpe": 5.05
     }
   },
+  "l1": {
+    "key_indicators": [
+      {
+        "name": "成交量",
+        "type": "volume",
+        "last": 47125.0,
+        "z_score": -0.69,
+        "trend_pct": 5.04,
+        "vol_daily_pct": 32.205,
+        "signal": "中性",
+        "strength": 2.43
+      },
+      {
+        "name": "持仓",
+        "type": "positioning",
+        "last": 80178.0,
+        "z_score": 0.49,
+        "trend_pct": 2.98,
+        "vol_daily_pct": 7.725,
+        "signal": "偏多",
+        "strength": 1.49
+      },
+      {
+        "name": "价格(收)",
+        "type": "price",
+        "last": 15905.0,
+        "z_score": -1.12,
+        "trend_pct": -1.82,
+        "vol_daily_pct": 0.696,
+        "signal": "偏空",
+        "strength": 1.4
+      }
+    ],
+    "all": [
+      {
+        "name": "成交量",
+        "type": "volume",
+        "last": 47125.0,
+        "z_score": -0.69,
+        "trend_pct": 5.04,
+        "vol_daily_pct": 32.205,
+        "signal": "中性",
+        "strength": 2.43
+      },
+      {
+        "name": "持仓",
+        "type": "positioning",
+        "last": 80178.0,
+        "z_score": 0.49,
+        "trend_pct": 2.98,
+        "vol_daily_pct": 7.725,
+        "signal": "偏多",
+        "strength": 1.49
+      },
+      {
+        "name": "价格(收)",
+        "type": "price",
+        "last": 15905.0,
+        "z_score": -1.12,
+        "trend_pct": -1.82,
+        "vol_daily_pct": 0.696,
+        "signal": "偏空",
+        "strength": 1.4
+      }
+    ]
+  },
   "contradictions": [
     "TC_shrinkage",
     "regen_openrate_drop",
     "cost_support",
     "inventory_build"
+  ],
+  "data_sources": [
+    {
+      "layer": "L0",
+      "name": "zhiji 观·伦铅/沪铅 kline",
+      "detail": "伦铅现货40日zscore + 沪铅120日同步相关，OOS验证唯一真领先信号(命中0.652/夏普5.05)"
+    },
+    {
+      "layer": "行情",
+      "name": "zhiji 观·沪铅主力 kline(120日)",
+      "detail": "收盘价/持仓/成交 → L1 确定性画像 + K线渲染"
+    },
+    {
+      "layer": "L2/L3",
+      "name": "zhiji 料·17条铅序列(日/周/月)",
+      "detail": "供应/成本/需求/库存/价差进口 → L2治理(分位/dev/3m/12m) + L3信号打分"
+    },
+    {
+      "layer": "L5",
+      "name": "zhiji 讯·铅相关快讯(72h)",
+      "detail": "新闻情绪分桶(key_bull/bear/neutral) + 机构近似共识(L5)"
+    },
+    {
+      "layer": "引擎",
+      "name": "fetch_v3 + arbiter + news_struct",
+      "detail": "L3逐条打分(非抵消) → L4同花顺4层优先级仲裁 + 时间维度横切 → L6置信校准"
+    }
   ],
   "data_as_of": "2026-08-18",
   "prompt_data": {
