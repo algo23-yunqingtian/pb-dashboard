@@ -1,17 +1,27 @@
-name: Fetch Lead Data
+name: Fetch Lead Data & Deploy
 
 on:
   schedule:
     - cron: '*/30 * * * *'
   workflow_dispatch:
 
+# 单工作流内串行，避免并发部署冲突（GitHub Pages 同时只允许一个 in-progress 部署）
+concurrency:
+  group: pb-pages-deploy
+  cancel-in-progress: true
+
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 jobs:
-  fetch:
+  build-deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
 
@@ -43,3 +53,15 @@ jobs:
           git add data.json
           git diff --cached --quiet || git commit -m "update data $(date +%Y-%m-%d\ %H:%M)"
           git push
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
