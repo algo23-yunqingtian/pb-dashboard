@@ -1,0 +1,114 @@
+# 铅(PB) 品种知识卡（结构化 YAML）v0.5 最小化
+# ===========================================
+# 对标：ARCHITECTURE_universal_v6.md 的 PB_card.yaml v0.5 最小化 schema。
+# 变更要点(v0.4 → v0.5)：
+#   - 删除"权重和=1 + 7类矛盾模式 + 跨市场加权抵消公式"的抵消式结构。
+#   - 改为 signals 列表：每条品种特异阈值信号独立打 {direction, tier, priority, strength}，
+#     不做多空加权抵消，交由 L4 仲裁层(arbiter.py)按 4 层优先级裁决。
+#   - L0 提示词注入用 registry/PB_card.md（纯文本）不变；本文件供 L3 引擎 + L4 仲裁消费。
+# 验收：test_card_engine.py 校验 signals 条数、每条必含 direction/tier/priority，
+#       多空可共存，方向由 arbiter 决定（而非分数抵消归零）。
+
+card_code: PB
+card_version: v0.5
+
+meta:
+  品种: 沪铅
+  合约: SHFE.PB
+  现货锚: 1#铅 / SMM
+  主导矛盾: "供应小幅过剩 + 淡季累库 + 进口流入(偏空) ↔ 再生铅成本支撑 + 金九银十旺季预期(偏多)"
+  知识卡人工成本: "2-3h"
+  配置卡人工成本: "30min"
+  price_anchor:
+    support_note: "下方成本软底15200-15430（再生成本支撑）"
+    resist_note: "上方库存/需求验证压力16500"
+    seasonal: "金九银十+冬季替换为旺季；夏季(高温)为淡季"
+
+# 品种特异阈值信号（最小化：仅保留需阈值判定的信号，不做权重抵消）
+# 字段：id / layer(所属维度) / direction(+1多,-1空) / tier(1-4,越高越可信)
+#       priority(1-4,L4仲裁优先级,1最高) / horizon(short/mid/long,时间维度横切用)
+#       cond(判定条件,引擎用) / evidence
+signals:
+  - id: TC_shrinkage
+    layer: 供应/矿端
+    direction: +1
+    tier: 2
+    priority: 3        # 供应端
+    horizon: mid       # 中期供应收缩
+    cond: "import_tc < -150 AND native_lead_openrate < 63"
+    evidence: "矿紧(TC负)+原生开工低 → 供应收缩托底"
+    threshold: {import_tc: -150, native_lead_openrate: 63}
+
+  - id: regen_openrate_drop
+    layer: 供应/再生
+    direction: +1
+    tier: 2
+    priority: 3        # 供应端（再生为边际定价者）
+    horizon: mid
+    cond: "regenerative_lead_openrate < 63"
+    evidence: "再生开工率↓ + 废电瓶成本高 → 再生供应收缩 → 成本支撑偏多托底"
+    threshold: {regenerative_lead_openrate: 63}
+
+  - id: cost_support
+    layer: 成本
+    direction: +1
+    tier: 1
+    priority: 1        # P1 已验证现货现实/成本支撑（最高）
+    horizon: mid
+    cond: "scrap_battery_price 升 且 regenerative_lead_profit < 0"
+    evidence: "废电瓶价升 → 成本线上移 → 限制下方空间 → 偏多"
+    threshold: {regen_profit: 0}
+
+  - id: inventory_build
+    layer: 库存
+    direction: -1
+    tier: 1
+    priority: 1        # P1 已验证现货现实（库存是铅最核心指标）
+    horizon: short     # 累库对短期现货压制最直接
+    cond: "inventory 累库"
+    evidence: "累库 → 供应过剩显性化 → 压制价格 → 偏空"
+    threshold: {}
+
+  - id: import_window_open
+    layer: 进出口
+    direction: -1
+    tier: 2
+    priority: 3
+    horizon: short
+    cond: "import_parity > 0"
+    evidence: "进口窗口开(盈利) → 流入增加 → 累库压力 → 偏空"
+    threshold: {import_parity: 0}
+
+  - id: battery_demand
+    layer: 消费
+    direction: +1
+    tier: 3
+    priority: 4        # 需求端/时间维度（最低优先，弱相关）
+    horizon: mid       # 金九银十+冬季替换旺季预期为中期逻辑
+    cond: "battery_openrate 升 且 apparent_demand 升"
+    evidence: "下游备货 → 去库 → 反弹 → 偏多；金九银十+冬季替换为旺季"
+    threshold: {}
+
+# L4 仲裁配置（对齐同花顺4层优先级，见 iwencai_pb_compare.md）
+arbiter:
+  priority_order: [1, 2, 3, 4]
+  priority_names:
+    1: "P1 已验证现货现实>成本支撑"
+    2: "P2 变化方向>绝对水平"
+    3: "P3 供应端>需求端"
+    4: "P4 短期>中期>长期"
+  rule: "仅高层平手才下探；同层内先看多空数量，再看strength"
+
+# 价位档位（前22期高低点 + ATR，框架层计算后回填）
+price_levels:
+  强支撑: null
+  弱支撑: null
+  压力位: null
+  止损位: null
+
+# Platt 校准参数（先验→拟合，季度重训+月度微调）
+platt:
+  A: 0.95
+  B: 0.12
+  窗口: "2年"
+  上线先验: {A: 0.9, B: 0.15}
