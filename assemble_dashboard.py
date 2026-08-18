@@ -107,13 +107,27 @@ def main():
               "params": "LME→1#铅 40日z, h=20, conv=neg",
               "oos": {"hit": 0.652, "p": 0.0138, "net_return_pct": 20.0, "sharpe": 5.05}}
 
+    # 6.5) 数据源清单（zhiji 观/料/讯）
+    data_sources = [
+        {"layer": "L0", "name": "zhiji 观·伦铅/沪铅 kline",
+         "detail": "伦铅现货40日zscore + 沪铅120日同步相关，OOS验证唯一真领先信号(命中0.652/夏普5.05)"},
+        {"layer": "行情", "name": "zhiji 观·沪铅主力 kline(120日)",
+         "detail": "收盘价/持仓/成交 → L1 确定性画像 + K线渲染"},
+        {"layer": "L2/L3", "name": "zhiji 料·17条铅序列(日/周/月)",
+         "detail": "供应/成本/需求/库存/价差进口 → L2治理(分位/dev/3m/12m) + L3信号打分"},
+        {"layer": "L5", "name": "zhiji 讯·铅相关快讯(72h)",
+         "detail": "新闻情绪分桶(key_bull/bear/neutral) + 机构近似共识(L5)"},
+        {"layer": "引擎", "name": "fetch_v3 + arbiter + news_struct",
+         "detail": "L3逐条打分(非抵消) → L4同花顺4层优先级仲裁 + 时间维度横切 → L6置信校准"},
+    ]
+
     # 6) 组装 data.json
     data = {
         "meta": {
             "code": code, "name": "铅",
             "data_as_of": kline[-1]["time"],
             "freshness": freshness.meta(funda, kline[-1].get("time")),
-            "engine_version": "fetch_v3 + P0-P4",
+            "engine_version": "fetch_v3 + P0-P4 (L0–L6 full)",
         },
         "realtime": build_realtime(kline),
         "analysis": {
@@ -129,7 +143,9 @@ def main():
         "news": build_news(news),
         "institution": build_institution(news),
         "l0": l0_obj,
+        "l1": prof,  # L1 行情确定性画像（auto_profile）
         "contradictions": (pred.get("card_engine") or {}).get("contradictions", []),
+        "data_sources": data_sources,
         "data_as_of": kline[-1]["time"],
     }
 
