@@ -1,0 +1,24 @@
+{
+  "code": "PB",
+  "name": "铅",
+  "_comment": "已用 /commodity/api/search?q=铅 发现真实序列ID并核实有2026实时数据。行情(价格/持仓)走Guan kline，下列为料基本面序列，fetch_v3 用 fetch_series 拉近期窗口。type 仅用于分组与auto_profile，不承载品种逻辑。",
+  "series": [
+    {"id": "ID01167236", "label": "原生铅产量", "type": "supply", "unit": "万吨/周", "freq": "周"},
+    {"id": "a10016988", "label": "原生铅开工率(SMM)", "type": "supply", "unit": "%", "freq": "月"},
+    {"id": "a10017000", "label": "再生铅开工率(SMM)", "type": "supply", "unit": "%", "freq": "月"},
+    {"id": "ID00259970", "label": "还原铅市场价", "type": "cost", "unit": "元/吨", "freq": "日"},
+    {"id": "ID00188200", "label": "启动黑壳废电瓶市场价", "type": "cost", "unit": "元/吨", "freq": "日"},
+    {"id": "ID01001569", "label": "铅表观消费量", "type": "demand", "unit": "万吨/月", "freq": "月"},
+    {"id": "ID01167603", "label": "原生铅成品库存", "type": "inventory", "unit": "万吨/周", "freq": "周"},
+    {"id": "ID00188315", "label": "铅锭现货库存", "type": "inventory", "unit": "吨/日", "freq": "日"},
+    {"id": "ID02226083", "label": "LME铅全球库存", "type": "inventory", "unit": "吨/月", "freq": "月"},
+    {"id": "a10021351", "label": "1#铅均价(现货)", "type": "spread", "unit": "元/吨", "freq": "日"},
+    {"id": "a10021353", "label": "国产铅精矿价格", "type": "spread", "unit": "元/吨", "freq": "日"},
+    {"id": "a10021354", "label": "LME铅现货价格", "type": "spread", "unit": "美元/吨", "freq": "日"},
+    {"id": "ID01360493", "label": "铅精矿TC(远期现货)", "type": "spread", "unit": "美元/干吨", "freq": "日"},
+    {"id": "a10016953", "label": "再生铅利润(SMM)", "type": "cost", "unit": "元/吨", "freq": "日", "source": "zhiji", "note": "zhiji实时时序，替代原问财静态快照(-610)"},
+    {"id": "ID01030005", "label": "铅蓄电池开工率", "type": "demand", "unit": "%", "freq": "月", "source": "zhiji", "note": "zhiji实时时序，替代原问财静态快照(62.91)"},
+    {"id": "FU00024324", "label": "SHFE铅基差(现货-期货)", "type": "spread", "unit": "元/吨", "freq": "日", "source": "zhiji", "note": "zhiji实时时序，替代原问财静态快照(-220)"},
+    {"id": "ID01030003", "label": "铅锭进口盈亏", "type": "spread", "unit": "元/吨", "freq": "日", "source": "zhiji", "note": "zhiji实时时序，替代原问财静态快照(进口平价454)。>0=进口窗口开"}
+  ]
+}
