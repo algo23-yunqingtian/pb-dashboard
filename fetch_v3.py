@@ -708,7 +708,9 @@ def main():
     registry = load_registry(a.code)
     funda = build_fundamental(registry)
     for t, items in funda.items():
-        print(f"  [{t}] {'; '.join(f\"{i['label']}={i['latest']}(近月{i.get('chg_pct'):+}%)\" if i.get('chg_pct') is not None else f\"{i['label']}={i.get('latest')}\" for i in items)}")
+        print(f"  [{t}] " + "; ".join(
+            f"{i['label']}={i['latest']}(近月{i.get('chg_pct'):+}%)" if i.get('chg_pct') is not None
+            else f"{i['label']}={i.get('latest')}" for i in items))
 
     print("=== 4) auto_profile 行情画像 ===")
     prof = auto_profile.analyze(kline)
