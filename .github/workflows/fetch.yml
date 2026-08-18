@@ -22,18 +22,18 @@ jobs:
 
       - name: Set environment variables (zhiji keys)
         run: |
-          echo "GUAN_KEY=${{ secrets.GUAN_KEY || guan_a3dbade5e217468006af273fdc772f91 }}" >> $GITHUB_ENV
-          echo "NEWS_KEY=${{ secrets.NEWS_KEY || nws_f5b4b6c653104d0f965fb3463dcf7eed }}" >> $GITHUB_ENV
-          echo "DATA_KEY=${{ secrets.DATA_KEY || data_8e863643ecc13f11d2c669bdb672f7db }}" >> $GITHUB_ENV
+          echo "GUAN_KEY=${{ secrets.GUAN_KEY || 'guan_a3dbade5e217468006af273fdc772f91' }}" >> $GITHUB_ENV
+          echo "NEWS_KEY=${{ secrets.NEWS_KEY || 'nws_f5b4b6c653104d0f965fb3463dcf7eed' }}" >> $GITHUB_ENV
+          echo "DATA_KEY=${{ secrets.DATA_KEY || 'data_8e863643ecc13f11d2c669bdb672f7db' }}" >> $GITHUB_ENV
 
       - name: Install deps
         run: pip install -r requirements.txt
 
       - name: Assemble dashboard data
         env:
-          GUAN_KEY: ${{ secrets.GUAN_KEY || guan_a3dbade5e217468006af273fdc772f91 }}
-          NEWS_KEY: ${{ secrets.NEWS_KEY || nws_f5b4b6c653104d0f965fb3463dcf7eed }}
-          DATA_KEY: ${{ secrets.DATA_KEY || data_8e863643ecc13f11d2c669bdb672f7db }}
+          GUAN_KEY: ${{ secrets.GUAN_KEY || 'guan_a3dbade5e217468006af273fdc772f91' }}
+          NEWS_KEY: ${{ secrets.NEWS_KEY || 'nws_f5b4b6c653104d0f965fb3463dcf7eed' }}
+          DATA_KEY: ${{ secrets.DATA_KEY || 'data_8e863643ecc13f11d2c669bdb672f7db' }}
         run: python assemble_dashboard.py
 
       - name: Commit & push data.json
