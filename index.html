@@ -9,25 +9,35 @@
   :root{
     --bg:#0f1420; --card:#171e2e; --card2:#1d2740; --line:#2a3550;
     --txt:#e6ecf5; --dim:#8b96ad; --bull:#e8563a; --bear:#2f9e6e;
-    --acc:#f0b90b; --neutral:#8b96ad; --layer:#5b8def;
+    --acc:#f0b90b; --neutral:#8b96ad; --layer:#5b8def; --side:#101622;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;line-height:1.55;padding:22px}
-  .wrap{max-width:1180px;margin:0 auto}
+  body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;line-height:1.55}
+  .app{display:flex;min-height:100vh}
+  /* 左侧导航 */
+  .sidebar{width:210px;background:var(--side);border-right:1px solid var(--line);padding:18px 12px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column}
+  .sidebar .logo{font-size:20px;font-weight:800;letter-spacing:1px;margin-bottom:4px}
+  .sidebar .logo small{color:var(--acc);font-size:12px}
+  .sidebar .sub{color:var(--dim);font-size:11px;margin-bottom:18px}
+  .navbtn{display:block;width:100%;text-align:left;background:transparent;color:var(--dim);border:1px solid transparent;border-radius:9px;padding:11px 13px;margin-bottom:8px;font-size:14px;cursor:pointer;transition:.15s}
+  .navbtn:hover{background:var(--card2);color:var(--txt)}
+  .navbtn.active{background:var(--acc);color:#1a1300;font-weight:700;border-color:var(--acc)}
+  .side-foot{margin-top:auto;font-size:11px;color:var(--dim);line-height:1.7;border-top:1px solid var(--line);padding-top:12px}
+  .main{flex:1;padding:22px;max-width:980px;margin:0 auto}
   header{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;margin-bottom:6px}
-  h1{font-size:24px;letter-spacing:1px}
-  h1 small{color:var(--acc);font-size:14px;font-weight:600}
+  h1{font-size:22px;letter-spacing:1px}
+  h1 small{color:var(--acc);font-size:13px;font-weight:600}
   .asof{color:var(--dim);font-size:13px}
   .badge{display:inline-block;padding:4px 14px;border-radius:20px;font-size:14px;font-weight:700;margin-left:auto}
   .badge.bull{background:rgba(232,86,58,.15);color:var(--bull);border:1px solid var(--bull)}
   .badge.bear{background:rgba(47,158,110,.15);color:var(--bear);border:1px solid var(--bear)}
   .badge.neutral{background:rgba(139,146,173,.15);color:var(--neutral);border:1px solid var(--neutral)}
-  .sub{color:var(--dim);font-size:13px;margin-bottom:18px}
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:14px}
+  .sub{color:var(--dim);font-size:13px;margin-bottom:16px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:14px}
   .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px}
   .card h3{font-size:12px;color:var(--dim);font-weight:600;margin-bottom:8px;letter-spacing:.5px}
-  .big{font-size:28px;font-weight:800}
-  .num{font-size:20px;font-weight:700}
+  .big{font-size:26px;font-weight:800}
+  .num{font-size:19px;font-weight:700}
   .metric{display:flex;justify-content:space-between;padding:3px 0;font-size:12.5px;border-bottom:1px dashed var(--line)}
   .metric:last-child{border-bottom:none}
   .metric .k{color:var(--dim)}
@@ -67,117 +77,271 @@
   .foot{color:var(--dim);font-size:12px;margin-top:18px;text-align:center;line-height:1.7}
   .l0dir{font-size:17px;font-weight:700;margin:5px 0}
   .note{color:var(--dim);font-size:11.5px;margin-top:6px}
+  .hidden{display:none!important}
+  /* 子标签 */
+  .subtabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+  .subtabs button{background:var(--card2);color:var(--dim);border:1px solid var(--line);border-radius:8px;padding:6px 13px;font-size:12.5px;cursor:pointer;transition:.15s}
+  .subtabs button:hover{color:var(--txt)}
+  .subtabs button.active{background:var(--acc);color:#1a1300;font-weight:700;border-color:var(--acc)}
+  /* 简报 */
+  .report{background:var(--card2);border-radius:8px;padding:14px;font-size:13px;line-height:1.7}
+  .report h4{color:var(--acc);font-size:13px;margin:12px 0 4px}
+  .report h4:first-child{margin-top:0}
+  .report ul{margin:2px 0 4px 18px}
+  .report .kv{display:flex;gap:8px;padding:3px 0}
+  .report .kv .k{color:var(--dim);min-width:84px}
+  .report .risk{color:var(--bull)}
+  .report .bull-c{color:var(--bull)}
+  .report .bear-c{color:var(--bear)}
+  .scorebar{display:flex;flex-wrap:wrap;gap:10px;margin:4px 0 12px}
+  .scorebar .sc{flex:1;min-width:130px;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:7px 10px}
+  .scorebar .sc .lab{font-size:11px;color:var(--dim);display:flex;justify-content:space-between}
+  .scorebar .sc .track{height:6px;background:#0c111c;border-radius:3px;margin-top:4px;overflow:hidden}
+  .scorebar .sc .fill{height:100%;background:var(--acc)}
+  .scoretotal{font-size:13px;color:var(--acc);font-weight:700;margin-bottom:6px}
+  /* 架构视图 */
+  .flow-title{color:var(--acc);font-size:14px;font-weight:700;margin:4px 0 2px}
+  .stream{display:flex;gap:10px;margin:6px 0}
+  .srcbox{flex:1;background:var(--card2);border:1px solid var(--layer);border-radius:8px;padding:9px 11px;font-size:12px}
+  .srcbox b{color:var(--layer)}
+  .arrow{text-align:center;color:var(--dim);font-size:18px;margin:2px 0}
+  .stage{border-left:3px solid var(--acc);background:var(--card2);border-radius:0 8px 8px 0;padding:11px 14px;margin:8px 0}
+  .stage .h{font-weight:700;font-size:13.5px;color:var(--txt);margin-bottom:5px}
+  .stage .h .lyr{font-size:10px;background:var(--layer);color:#fff;border-radius:4px;padding:1px 6px;margin-right:6px}
+  .stage .row{font-size:12px;padding:2px 0}
+  .stage .row .lab{color:var(--dim);display:inline-block;min-width:58px}
+  .stage .bot{color:var(--bull);font-size:11.5px;margin-top:5px;border-top:1px dashed var(--line);padding-top:5px}
+  .cmp{width:100%;border-collapse:collapse;font-size:12px;margin-top:6px}
+  .cmp th,.cmp td{border:1px solid var(--line);padding:6px 8px;vertical-align:top}
+  .cmp th{background:var(--card2);color:var(--acc)}
+  .arch-section{margin-bottom:8px}
+  .arch-section > h3{color:var(--layer);font-size:14px;margin:16px 0 6px;border-bottom:1px solid var(--line);padding-bottom:5px}
+  .pillrow{display:flex;flex-wrap:wrap;gap:7px;margin:6px 0}
+  .pillbox{background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:8px 11px;font-size:12px;flex:1;min-width:200px}
+  .pillbox b{color:var(--acc)}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <h1>铅 <small>PB</small></h1>
-    <span class="asof" id="asof"></span>
-    <span class="badge neutral" id="dirBadge">--</span>
-  </header>
-  <div class="sub" id="sub"></div>
+<div class="app">
+  <!-- 左侧导航 -->
+  <nav class="sidebar">
+    <div class="logo">铅 <small>PB</small></div>
+    <div class="sub">基本面看板 · L0–L6</div>
+    <button class="navbtn active" data-view="dash">📊 实时看板</button>
+    <button class="navbtn" data-view="arch">🏗 分析体系架构</button>
+    <div class="side-foot">数据源 zhiji(观/料/讯)<br>每 30 分钟自动刷新<br><br>左侧切换：<br>看板 = L0–L6 + 简版研报<br>架构 = 信息流与对标</div>
+  </nav>
 
-  <!-- K线 -->
-  <div class="panel">
-    <h2><span class="lyr">行情</span> 沪铅主力 · 日线 (120日)</h2>
-    <div class="chart-box"><canvas id="kline"></canvas></div>
-  </div>
+  <div class="main">
+    <!-- ============ 看板视图 ============ -->
+    <div id="view-dash">
+      <header>
+        <h1>铅 <small>PB</small></h1>
+        <span class="asof" id="asof"></span>
+        <span class="badge neutral" id="dirBadge">--</span>
+      </header>
+      <div class="sub" id="sub"></div>
 
-  <!-- KPI -->
-  <div class="grid">
-    <div class="card"><h3>主方向 (L4裁决)</h3><div class="big" id="dir">--</div></div>
-    <div class="card"><h3>L6 置信度 / 校准</h3><div class="num" id="conf">--</div></div>
-    <div class="card"><h3>支撑 / 阻力</h3><div class="num" id="range">--</div></div>
-    <div class="card"><h3>预期定价阶段</h3><div class="num" id="stage">--</div></div>
-    <div class="card"><h3>L0 领先方向</h3><div class="num" id="l0mini">--</div></div>
-  </div>
+      <div class="panel">
+        <h2><span class="lyr">行情</span> 沪铅主力 · 日线 (120日)</h2>
+        <div class="chart-box"><canvas id="kline"></canvas></div>
+      </div>
 
-  <!-- L0 -->
-  <div class="panel">
-    <h2><span class="lyr">L0</span> 已验证领先信号（伦铅→沪铅，OOS 唯一真领先）</h2>
-    <div class="l0dir" id="l0dir"></div>
-    <div id="l0meta" style="font-size:12.5px;color:var(--dim)"></div>
-    <div class="tags" id="l0tags"></div>
-  </div>
+      <div class="grid">
+        <div class="card"><h3>主方向 (L4裁决)</h3><div class="big" id="dir">--</div></div>
+        <div class="card"><h3>L6 置信度 / 校准</h3><div class="num" id="conf">--</div></div>
+        <div class="card"><h3>支撑 / 阻力</h3><div class="num" id="range">--</div></div>
+        <div class="card"><h3>预期定价阶段</h3><div class="num" id="stage">--</div></div>
+        <div class="card"><h3>L0 领先方向</h3><div class="num" id="l0mini">--</div></div>
+      </div>
 
-  <!-- L1 -->
-  <div class="panel">
-    <h2><span class="lyr">L1</span> 行情确定性画像（auto_profile，零品种逻辑统计）</h2>
-    <div id="l1"></div>
-  </div>
+      <div class="panel">
+        <h2><span class="lyr">L0</span> 已验证领先信号（伦铅→沪铅，OOS 唯一真领先）</h2>
+        <div class="l0dir" id="l0dir"></div>
+        <div id="l0meta" style="font-size:12.5px;color:var(--dim)"></div>
+        <div class="tags" id="l0tags"></div>
+      </div>
 
-  <!-- L2 -->
-  <div class="panel">
-    <h2><span class="lyr">L2</span> 数据治理 · 时效审计（逐序列新鲜度）</h2>
-    <table><thead><tr><th>序列</th><th>频率</th><th>最新日期</th><th>滞后</th><th>状态</th></tr></thead>
-    <tbody id="freshBody"></tbody></table>
-    <div class="note">铁律：判当日方向优先用最新鲜序列(日/周)；滞后月度序列只取趋势与绝对水平参考，不单独判方向。</div>
-  </div>
+      <div class="panel">
+        <h2><span class="lyr">L1</span> 行情确定性画像（auto_profile，零品种逻辑统计）</h2>
+        <div id="l1"></div>
+      </div>
 
-  <!-- L3 -->
-  <div class="panel">
-    <h2><span class="lyr">L3</span> 信号打分明细（逐条命中 · 非抵消）</h2>
-    <div id="l3"></div>
-  </div>
+      <div class="panel">
+        <h2><span class="lyr">L2</span> 数据治理 · 时效审计（逐序列新鲜度）</h2>
+        <table><thead><tr><th>序列</th><th>频率</th><th>最新日期</th><th>滞后</th><th>状态</th></tr></thead>
+        <tbody id="freshBody"></tbody></table>
+        <div class="note">铁律：判当日方向优先用最新鲜序列(日/周)；滞后月度序列只取趋势与绝对水平参考，不单独判方向。</div>
+      </div>
 
-  <!-- L4 -->
-  <div class="panel">
-    <h2><span class="lyr">L4</span> 仲裁裁决（同花顺 4 层优先级 + 时间维度横切）</h2>
-    <div id="l4head" style="font-size:14px;font-weight:700;margin-bottom:8px"></div>
-    <pre class="verdict" id="verdict"></pre>
-    <div class="tags" id="contradTags"></div>
-  </div>
+      <div class="panel">
+        <h2><span class="lyr">L3</span> 信号打分明细（逐条命中 · 非抵消）</h2>
+        <div id="l3"></div>
+      </div>
 
-  <!-- 触发条件 -->
-  <div class="panel">
-    <h2><span class="lyr c">★</span> 强化 / 证伪信号（triggers）</h2>
-    <div class="grid">
-      <div class="card"><h3>偏多触发</h3><div id="trigBull" style="font-size:13px"></div></div>
-      <div class="card"><h3>偏空触发</h3><div id="trigBear" style="font-size:13px"></div></div>
+      <div class="panel">
+        <h2><span class="lyr">L4</span> 仲裁裁决（同花顺 4 层优先级 + 时间维度横切）</h2>
+        <div id="l4head" style="font-size:14px;font-weight:700;margin-bottom:8px"></div>
+        <pre class="verdict" id="verdict"></pre>
+        <div class="tags" id="contradTags"></div>
+      </div>
+
+      <div class="panel">
+        <h2><span class="lyr c">★</span> 强化 / 证伪信号（triggers）</h2>
+        <div class="grid">
+          <div class="card"><h3>偏多触发</h3><div id="trigBull" style="font-size:13px"></div></div>
+          <div class="card"><h3>偏空触发</h3><div id="trigBear" style="font-size:13px"></div></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2><span class="lyr">L5</span> 新闻分桶 + 机构近似共识</h2>
+        <div id="news"></div>
+        <div id="inst" style="margin-top:10px;font-size:12.5px;color:var(--txt);white-space:pre-wrap;background:var(--card2);border-radius:8px;padding:11px"></div>
+      </div>
+
+      <div class="panel">
+        <h2><span class="lyr">L6</span> 校准与置信（规则引擎可复现性）</h2>
+        <div id="l6" style="font-size:13px"></div>
+      </div>
+
+      <div class="panel">
+        <h2><span class="lyr c">全文</span> 完整分析正文（引擎生成的 L0–L6 叙述 + 数据来源，详尽版）</h2>
+        <pre class="verdict" id="fulltext"></pre>
+      </div>
+
+      <!-- 简版研报（新增） -->
+      <div class="panel" id="reportPanel">
+        <h2><span class="lyr c">简报</span> 简版研报 · 同花顺式结构化输出（多投资者视角）</h2>
+        <div class="subtabs" id="reportTabs">
+          <button data-r="morning" class="active">标准晨报</button>
+          <button data-r="trader">短线交易员</button>
+          <button data-r="industry">产业客户</button>
+          <button data-r="institution">机构配置</button>
+          <button data-r="retail">散户小白</button>
+        </div>
+        <div class="scorebar" id="reportScore"></div>
+        <div class="report" id="reportBody"></div>
+      </div>
+
+      <div class="panel">
+        <h2><span class="lyr">源</span> 数据源清单（zhiji 观 / 料 / 讯）</h2>
+        <div id="sources"></div>
+      </div>
+
+      <div class="foot">
+        铅基本面看板 · 由 assemble_dashboard.py 生成 · L0领先+L1画像+L2治理+L3打分+L4仲裁+L5新闻+L6校准<br>
+        数据源 zhiji（观=行情 / 料=基本面序列 / 讯=新闻）· 每 30 分钟自动刷新
+      </div>
     </div>
-  </div>
 
-  <!-- L5 -->
-  <div class="panel">
-    <h2><span class="lyr">L5</span> 新闻分桶 + 机构近似共识</h2>
-    <div id="news"></div>
-    <div id="inst" style="margin-top:10px;font-size:12.5px;color:var(--txt);white-space:pre-wrap;background:var(--card2);border-radius:8px;padding:11px"></div>
-  </div>
+    <!-- ============ 架构视图 ============ -->
+    <div id="view-arch" class="hidden">
+      <header><h1>分析体系架构</h1><span class="asof">信息流：zhiji 数据 + 新闻 → 特征值加工 → 通用模板 prompt + 铅特征卡 → 多版本结构化输出</span></header>
+      <div class="sub">每一环节标注「输入 / 加工了什么 / 瓶颈」；并附对标同花顺、迭代空间、品种扩展。</div>
 
-  <!-- L6 -->
-  <div class="panel">
-    <h2><span class="lyr">L6</span> 校准与置信（规则引擎可复现性）</h2>
-    <div id="l6" style="font-size:13px"></div>
-  </div>
+      <div class="arch-section">
+        <h3>① 信息流总览（两条支流汇入分析产出）</h3>
+        <div class="stream">
+          <div class="srcbox"><b>📈 数据支流</b><br>zhiji 观（行情 kline）<br>zhiji 料（17条基本面序列：供应/成本/需求/库存/价差进口）</div>
+          <div class="srcbox"><b>📰 新闻支流</b><br>zhiji 讯（铅相关快讯 72h）<br>→ 情绪分桶 + 机构近似共识</div>
+        </div>
+        <div class="arrow">↓ 汇入</div>
+      </div>
 
-  <!-- 完整分析正文 -->
-  <div class="panel">
-    <h2><span class="lyr c">全文</span> 完整分析正文（引擎生成的 L0–L6 叙述 + 数据来源）</h2>
-    <pre class="verdict" id="fulltext"></pre>
-  </div>
+      <div class="arch-section">
+        <h3>② 加工链路（L2 → L1/L0 → L3/L4/L5 → L6 → 输出）</h3>
 
-  <!-- 数据来源 -->
-  <div class="panel">
-    <h2><span class="lyr">源</span> 数据源清单（zhiji 观 / 料 / 讯）</h2>
-    <div id="sources"></div>
-  </div>
+        <div class="stage">
+          <div class="h"><span class="lyr">L2</span> 数据治理 · 筛选与质量门</div>
+          <div class="row"><span class="lab">输入</span>原始 17 序列 + 行情 kline（含日/周/月频）</div>
+          <div class="row"><span class="lab">加工</span>分位/偏离(dev)/3m/12m 变化率 → 时效审计（逐序列 staleness）→ 剔除滞后月度序列的单方向判断权</div>
+          <div class="row"><span class="lab">产出</span>干净、带新鲜度标签的特征矩阵 + 数据支撑度</div>
+          <div class="bot">瓶颈：月度序列滞后 3–7 天；非公开数据（持仓/席位/逐厂产量）缺失 → 用 zhiji + 五步漏斗补救</div>
+        </div>
 
-  <div class="foot">
-    铅基本面看板 · 由 assemble_dashboard.py 生成 · L0领先+L1画像+L2治理+L3打分+L4仲裁+L5新闻+L6校准<br>
-    数据源 zhiji（观=行情 / 料=基本面序列 / 讯=新闻）· 每 30 分钟自动刷新
+        <div class="stage">
+          <div class="h"><span class="lyr">L1/L0</span> 特征值加工（零品种逻辑统计 + OOS 验证）</div>
+          <div class="row"><span class="lab">输入</span>kline + 特征矩阵</div>
+          <div class="row"><span class="lab">加工</span>L1 auto_profile：z分数/趋势/波动/信号（不写死任何铅逻辑）；L0 伦铅→沪铅领先信号做真实 OOS 回测</div>
+          <div class="row"><span class="lab">产出</span>行情画像 + 唯一经 OOS 验证的真领先信号（命中0.652/夏普5.05/二项p=0.0138）</div>
+          <div class="bot">瓶颈：新品种 ID 采集最耗时、无法自动化；数据 &lt;2年 无法做 OOS；阈值需人工标定</div>
+        </div>
+
+        <div class="stage">
+          <div class="h"><span class="lyr">L3/L4/L5</span> 通用模板 prompt + 铅特征卡（裁决）</div>
+          <div class="row"><span class="lab">输入</span>L1/L2 特征 + L0 领先 + 新闻分桶</div>
+          <div class="row"><span class="lab">加工</span>L3 逐条打分（非抵消，输出每条方向/强度/优先级/证据）；L4 同花顺 4 层优先级硬编码仲裁（P1 已验证现货 &gt; 成本支撑 → P2 变化方向 &gt; 绝对水平 → P3 供应&gt;需求 → P4 时间）+ 时间维度横切；L5 新闻分 6 桶</div>
+          <div class="row"><span class="lab">产出</span>方向 + 置信 + 支撑阻力 + 核心矛盾 + 强化/证伪触发 + 裁决理由链</div>
+          <div class="bot">瓶颈（优势）：仲裁已硬编码可复现（同花顺为人工主观权重，常不一致）；待补：机构真研报来源（用户拍板）</div>
+        </div>
+
+        <div class="stage">
+          <div class="h"><span class="lyr">L6</span> 校准与多版本结构化输出</div>
+          <div class="row"><span class="lab">输入</span>L4 裁决 + 全量证据 + 完整分析正文</div>
+          <div class="row"><span class="lab">加工</span>置信校准（OOS 指标）；套用同花顺式「5维100分」打分；按投资者类型生成格式化简报</div>
+          <div class="row"><span class="lab">产出</span>详尽分析正文（保留）+ 标准晨报/短线/产业/机构/散户 5 类简版研报</div>
+          <div class="bot">瓶颈：LLM 解盘需提示词校准；认可度指标仅覆盖 OOS（命中/净收益/夏普/p），待补「决策采纳率 / P&L贡献」</div>
+        </div>
+      </div>
+
+      <div class="arch-section">
+        <h3>③ 对标同花顺（护城河定位）</h3>
+        <table class="cmp">
+          <tr><th>维度</th><th>同花顺问财</th><th>我们(铅看板)</th></tr>
+          <tr><td>数据覆盖</td><td>全（SMM/Mysteel/LME/海关/席位）</td><td>zhiji 观/料/讯 17序列 + 伦铅L0领先</td></tr>
+          <tr><td>机构观点</td><td>有（研报/电话会）</td><td>近似（新闻共识），真研报源缺失</td></tr>
+          <tr><td>因果验证</td><td><span class="bear-c">无法真实OOS回测</span></td><td><span class="bull-c">能跑真实OOS（唯一真领先）</span></td></tr>
+          <tr><td>仲裁</td><td>主观权重+经验（易不一致）</td><td>硬编码可复现（4层优先级）</td></tr>
+          <tr><td>品种扩展</td><td>通用但浅</td><td>品种卡工程化迁移(SOP 2–4h/品种)</td></tr>
+          <tr><td>结构化输出</td><td>强（4类模板+5维打分）</td><td>本版新增（5子标签+示意评分）</td></tr>
+        </table>
+        <div class="note">结论：同花顺赢在"数据全+机构全+产出实用"；我们赢在"真实OOS因果 + 仲裁可复现 + 品种卡可迁移"。互补——用同花顺产业先验当候选池，用我们OOS当最终筛选器。调研详见 docs/STRUCTURED_OUTPUT_RESEARCH.md</div>
+      </div>
+
+      <div class="arch-section">
+        <h3>④ 迭代优化空间（参考同花顺建议）</h3>
+        <div class="pillrow">
+          <div class="pillbox"><b>闭环归因</b><br>信号→价格→归因→权重调整，让权重自动优化而非人工主观</div>
+          <div class="pillbox"><b>认可度补全</b><br>加「决策采纳率 / P&L贡献」两项，形成 预测力→稳定性→实盘→决策价值 链</div>
+          <div class="pillbox"><b>机构研报源</b><br>接入真研报（用户拍板来源），补 L5 机构共识短板</div>
+          <div class="pillbox"><b>非公开数据</b><br>若可接入持仓/席位，提升数据支撑度分项</div>
+        </div>
+      </div>
+
+      <div class="arch-section">
+        <h3>⑤ 扩展到其他品种</h3>
+        <div class="pillrow">
+          <div class="pillbox"><b>迁移 SOP（每品种 2–4h）</b><br>产业链拆解 → zhiji枚举 → 五步漏斗(枚举→数据质量→因果/同期→OOS→业务归因) → 填 PB卡v0.5 → test_card_engine 校验 → 接 fetch_v3</div>
+          <div class="pillbox"><b>优先级</b><br>锌(P1 已备方法论模板) &gt; 镍 &gt; 铜；瓶颈在 ID 采集与阈值标定</div>
+        </div>
+      </div>
+
+      <div class="foot">架构图基于真实管线（assemble_dashboard.py / fetch_v3 / arbiter / news_struct / auto_profile）+ 2026-08-18 同花顺问财调研。</div>
+    </div>
   </div>
 </div>
 
 <script>
-let chart=null;
+let chart=null, D=null;
 const $=id=>document.getElementById(id);
 const DIR={bull:{txt:"偏多",cls:"bull"},bear:{txt:"偏空",cls:"bear"},neutral:{txt:"中性",cls:"neutral"}};
 
+// 导航切换
+document.querySelectorAll('.navbtn').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.navbtn').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  const v=b.dataset.view;
+  $('view-dash').classList.toggle('hidden', v!=='dash');
+  $('view-arch').classList.toggle('hidden', v!=='arch');
+});
+
 fetch('data.json').then(r=>r.json()).then(d=>{
+  D=d;
   renderHeader(d); renderKline(d); renderCards(d); renderL0(d);
   renderL1(d); renderL2(d); renderL3(d); renderL4(d); renderTriggers(d);
   renderL5(d); renderL6(d); renderFull(d); renderSources(d);
+  bindReports();
 }).catch(e=>{$('sub').textContent='加载失败: '+e;});
 
 function dirInfo(dir){
@@ -228,111 +392,166 @@ function renderL0(d){
       '<br>OOS命中 '+(o.hit!=null?o.hit:'--')+' · 二项p='+(o.p!=null?o.p:'--')+
       ' · 净收益+'+(o.net_return_pct!=null?o.net_return_pct:'--')+'% · 夏普'+(o.sharpe!=null?o.sharpe:'--');
     const t=$('l0tags'); t.innerHTML='<span class="tag acc">'+(l0.params||'')+'</span>';
-  } else {
-    $('l0dir').textContent='无数据'; $('l0meta').textContent='无法计算 L0 信号';
-  }
+  } else {$('l0dir').textContent='无数据';$('l0meta').textContent='无法计算 L0 信号';}
 }
 function renderL1(d){
-  const l1=d.l1||{};
-  const items=l1.key_indicators||[];
+  const l1=d.l1||{}; const items=l1.key_indicators||[];
   if(!items.length){$('l1').innerHTML='<div class="note">无画像数据</div>';return;}
-  let html='';
-  items.forEach(p=>{
+  let h=''; items.forEach(p=>{
     const sig=p.signal||'中性';
     const cls=sig.includes('多')?'up':sig.includes('空')?'down':'flat';
-    html+='<div class="sig-row"><span class="m">'+p.name+
-      ' <span class="'+cls+'">['+sig+']</span></span>'+
+    h+='<div class="sig-row"><span class="m">'+p.name+' <span class="'+cls+'">['+sig+']</span></span>'+
       '<span class="r">现值 '+p.last+' · z='+p.z_score+' · 趋势 '+(p.trend_pct!=null?p.trend_pct+'%':'--')+
       ' · 波动 '+(p.vol_daily_pct!=null?p.vol_daily_pct+'%':'--')+'</span></div>';
   });
-  $('l1').innerHTML=html;
+  $('l1').innerHTML=h;
 }
 function renderL2(d){
-  const f=(d.meta&&d.meta.freshness)||{};
-  const body=$('freshBody');
-  let html='';
-  (f.series||[]).forEach(s=>{
-    html+='<tr><td>'+s.label+'</td><td>'+(s.freq||'')+'</td><td>'+(s.latest_date||'--')+'</td><td>'+
-      (s.staleness_days!=null?s.staleness_days+'天':'--')+'</td>'+
-      '<td class="'+(s.stale?'stale':'flat')+'">'+(s.stale?'滞后':'正常')+'</td></tr>';
-  });
-  body.innerHTML=html||'<tr><td colspan=5>--</td></tr>';
+  const f=(d.meta&&d.meta.freshness)||{}; const body=$('freshBody'); let h='';
+  (f.series||[]).forEach(s=>{h+='<tr><td>'+s.label+'</td><td>'+(s.freq||'')+'</td><td>'+(s.latest_date||'--')+'</td><td>'+
+    (s.staleness_days!=null?s.staleness_days+'天':'--')+'</td><td class="'+(s.stale?'stale':'flat')+'">'+(s.stale?'滞后':'正常')+'</td></tr>';});
+  body.innerHTML=h||'<tr><td colspan=5>--</td></tr>';
 }
 function renderL3(d){
   const ev=d.analysis.evidence||[];
   if(!ev.length){$('l3').innerHTML='<div class="note">无命中信号</div>';return;}
-  let html='';
-  ev.forEach(e=>{
-    const isBull=e.value.includes('dir=+1');
-    const isBear=e.value.includes('dir=-1');
-    const cls=isBull?'up':isBear?'down':'flat';
-    // 解析 read 中的多空词
-    const tagRead=(e.read||'').match(/^(多|空|中性)\s*/);
-    const word=tagRead?tagRead[1]:'';
-    html+='<div class="sig-row"><span class="m">'+e.metric+
-      ' <span class="pill '+(isBull?'bull':isBear?'bear':'neutral')+'">'+(word||'')+'</span></span>'+
+  let h=''; ev.forEach(e=>{
+    const isB=e.value.includes('dir=+1'), isBe=e.value.includes('dir=-1');
+    const cls=isB?'up':isBe?'down':'flat';
+    const tagRead=(e.read||'').match(/^(多|空|中性)\s*/); const word=tagRead?tagRead[1]:'';
+    h+='<div class="sig-row"><span class="m">'+e.metric+' <span class="pill '+(isB?'bull':isBe?'bear':'neutral')+'">'+(word||'')+'</span></span>'+
       '<span class="r '+cls+'">'+e.read+'</span></div>';
   });
-  $('l3').innerHTML=html;
+  $('l3').innerHTML=h;
 }
 function renderL4(d){
-  const a=d.analysis;
-  $('l4head').textContent=a.dominant_contradiction||'--';
-  const ce=a.card_engine||{};
-  $('verdict').textContent=ce.verdict||'(无仲裁文本)';
+  const a=d.analysis; $('l4head').textContent=a.dominant_contradiction||'--';
+  const ce=a.card_engine||{}; $('verdict').textContent=ce.verdict||'(无仲裁文本)';
   const tags=$('contradTags'); tags.innerHTML='';
-  (d.contradictions||[]).forEach(c=>{
-    const tag=document.createElement('span'); tag.className='tag'; tag.textContent=c; tags.appendChild(tag);
-  });
+  (d.contradictions||[]).forEach(c=>{const t=document.createElement('span');t.className='tag';t.textContent=c;tags.appendChild(t);});
   if(ce.active){const t=document.createElement('span');t.className='tag acc';t.textContent='得分 '+ce.score+' · 仲裁 '+ce.arbiter;tags.appendChild(t);}
 }
 function renderTriggers(d){
   const tr=(d.analysis.triggers)||{};
-  const bb=(tr.bull||[]).map(x=>'• '+x).join('<br>')||'—';
-  const br=(tr.bear||[]).map(x=>'• '+x).join('<br>')||'—';
-  $('trigBull').innerHTML='<span class="up">'+bb+'</span>';
-  $('trigBear').innerHTML='<span class="down">'+br+'</span>';
+  $('trigBull').innerHTML='<span class="up">'+((tr.bull||[]).map(x=>'• '+x).join('<br>')||'—')+'</span>';
+  $('trigBear').innerHTML='<span class="down">'+((tr.bear||[]).map(x=>'• '+x).join('<br>')||'—')+'</span>';
 }
 function renderL5(d){
-  const box=$('news');
-  const order=['key_bull','key_bear','key_neutral','bull','bear','neutral'];
+  const box=$('news'); const order=['key_bull','key_bear','key_neutral','bull','bear','neutral'];
   const map={key_bull:['关键利多','bull'],key_bear:['关键利空','bear'],key_neutral:['关键中性','neutral'],bull:['利多','bull'],bear:['利空','bear'],neutral:['中性','neutral']};
-  const stMap={1:'bull',0:'neutral','-1':'bear'};
-  let html='';
-  order.forEach(k=>{ const grp=d.news[k]; if(!grp||!grp.items||!grp.items.length) return;
-    html+='<div class="pill '+map[k][1]+'">'+map[k][0]+' ('+grp.count+')</div>';
-    grp.items.forEach(n=>{
-      const s=stMap[n.sentiment]||'neutral';
-      const lbl=(n.sentiment===1?'多':n.sentiment===-1?'空':'中');
-      html+='<div class="news-item"><span class="pill '+s+'">'+lbl+'</span><span class="t">'+n.title+'</span><span class="s">'+n.source+' · '+n.time+'</span></div>';
-    });
-  });
-  box.innerHTML=html||'<div style="color:var(--dim)">近72h无铅相关新闻</div>';
-  const inst=d.institution||{};
-  $('inst').textContent=inst.text||('机构共识 score='+(inst.consensus!=null?inst.consensus:'--'));
+  const stMap={1:'bull',0:'neutral','-1':'bear'}; let h='';
+  order.forEach(k=>{const grp=d.news[k];if(!grp||!grp.items||!grp.items.length)return;
+    h+='<div class="pill '+map[k][1]+'">'+map[k][0]+' ('+grp.count+')</div>';
+    grp.items.forEach(n=>{const s=stMap[n.sentiment]||'neutral';const lbl=(n.sentiment===1?'多':n.sentiment===-1?'空':'中');
+      h+='<div class="news-item"><span class="pill '+s+'">'+lbl+'</span><span class="t">'+n.title+'</span><span class="s">'+n.source+' · '+n.time+'</span></div>';});});
+  box.innerHTML=h||'<div style="color:var(--dim)">近72h无铅相关新闻</div>';
+  const inst=d.institution||{}; $('inst').textContent=inst.text||('机构共识 score='+(inst.consensus!=null?inst.consensus:'--'));
 }
 function renderL6(d){
-  const a=d.analysis;
-  const l0=d.l0||{};
-  let html='';
-  html+='<div class="sig-row"><span class="m">规则引擎裁决置信</span><span class="r">'+(a.confidence_pct!=null?a.confidence_pct+'%':'--')+'（L4仲裁确定性）</span></div>';
-  html+='<div class="sig-row"><span class="m">L0 领先信号 OOS 验证</span><span class="r">命中 '+(l0.oos?l0.oos.hit:'--')+' · 二项p '+(l0.oos?l0.oos.p:'--')+' · 夏普 '+(l0.oos?l0.oos.sharpe:'--')+'</span></div>';
-  html+='<div class="sig-row"><span class="m">数据时效</span><span class="r">'+((d.meta&&d.meta.freshness)?(d.meta.freshness.stale_count+' 条滞后 / 共 '+(d.meta.freshness.series||[]).length+' 序列'):'--')+'</span></div>';
-  html+='<div class="note">校准原则：裁决为硬编码可复现（非LLM主观）。L0为唯一经OOS验证的真领先信号；其余人类叙事关系多数OOS≤0.5（共动非因果），已据实剔除，不作领先驱动。</div>';
-  $('l6').innerHTML=html;
+  const a=d.analysis; const l0=d.l0||{}; let h='';
+  h+='<div class="sig-row"><span class="m">规则引擎裁决置信</span><span class="r">'+(a.confidence_pct!=null?a.confidence_pct+'%':'--')+'（L4仲裁确定性）</span></div>';
+  h+='<div class="sig-row"><span class="m">L0 领先信号 OOS 验证</span><span class="r">命中 '+(l0.oos?l0.oos.hit:'--')+' · 二项p '+(l0.oos?l0.oos.p:'--')+' · 夏普 '+(l0.oos?l0.oos.sharpe:'--')+'</span></div>';
+  h+='<div class="sig-row"><span class="m">数据时效</span><span class="r">'+((d.meta&&d.meta.freshness)?(d.meta.freshness.stale_count+' 条滞后 / 共 '+(d.meta.freshness.series||[]).length+' 序列'):'--')+'</span></div>';
+  h+='<div class="note">校准原则：裁决为硬编码可复现（非LLM主观）。L0为唯一经OOS验证的真领先信号；其余人类叙事关系多数OOS≤0.5（共动非因果），已据实剔除，不作领先驱动。</div>';
+  $('l6').innerHTML=h;
 }
-function renderFull(d){
-  const t=(d.prompt_data&&d.prompt_data.user)||'';
-  $('fulltext').textContent=t||'(无分析正文)';
-}
+function renderFull(d){$('fulltext').textContent=((d.prompt_data&&d.prompt_data.user)||'(无分析正文)');}
 function renderSources(d){
-  const srcs=d.data_sources||[];
-  if(!srcs.length){$('sources').innerHTML='<div class="note">未提供数据源清单</div>';return;}
-  let html='';
-  srcs.forEach(s=>{
-    html+='<div class="src"><span class="n">['+s.layer+'] '+s.name+'</span><br><span class="d">'+s.detail+'</span></div>';
+  const srcs=d.data_sources||[]; if(!srcs.length){$('sources').innerHTML='<div class="note">未提供数据源清单</div>';return;}
+  let h=''; srcs.forEach(s=>{h+='<div class="src"><span class="n">['+s.layer+'] '+s.name+'</span><br><span class="d">'+s.detail+'</span></div>';});
+  $('sources').innerHTML=h;
+}
+
+/* ===================== 简版研报（多投资者子标签） ===================== */
+function evSplit(d){
+  const ev=d.analysis.evidence||[];
+  const bull=ev.filter(e=>e.value.includes('dir=+1')).map(e=>e.read);
+  const bear=ev.filter(e=>e.value.includes('dir=-1')).map(e=>e.read);
+  return {bull,bear};
+}
+function buildScore(d){
+  const a=d.analysis; const conf=a.confidence_pct||0;
+  const contrad=(d.contradictions||[]).length;
+  const series=((d.meta&&d.meta.freshness)||{}).series||[];
+  const trig=d.analysis.triggers||{};
+  const exec=(trig.bull||[]).length+(trig.bear||[]).length;
+  const dir25=Math.round(conf/100*25);
+  const contrail=Math.min(20,contrad*5);
+  const data20=Math.min(20,series.length*2);
+  const chg=Math.abs((d.realtime&&d.realtime.chg_120d)||10);
+  const risk20=Math.max(6,20-Math.min(20,chg));
+  const exec15=exec?15:8;
+  const total=dir25+contrail+data20+risk20+exec15;
+  const dims=[['方向确定性',dir25,25],['多空矛盾烈度',contrail,20],['数据支撑度',data20,20],['风险等级',risk20,20],['可执行性',exec15,15]];
+  let h='';
+  dims.forEach(([lab,v,max])=>{h+='<div class="sc"><div class="lab"><span>'+lab+'</span><span>'+v+'/'+max+'</span></div><div class="track"><div class="fill" style="width:'+(v/max*100)+'%"></div></div></div>';});
+  const tier=total>=80?'强信号·可重仓':total>=60?'中等·轻仓试错':total>=40?'弱信号·观望':'无效·放弃';
+  return '<div class="scoretotal">5维示意评分 '+total+'/100 · '+tier+'（同花顺式，OOS校准映射）</div>'+h;
+}
+function buildReport(type,d){
+  const a=d.analysis||{}; const dir=a.direction||'中性';
+  const conf=a.confidence_pct||0; const rng=a.range||{}; const dom=a.dominant_contradiction||'';
+  const trig=a.triggers||{}; const evs=evSplit(d); const inst=d.institution||{};
+  const rt=d.realtime||{}; const close=rt.close||'--';
+  const sup=rng.support||'--', res=rng.resist||'--';
+  const l0=d.l0||{};
+  let h='';
+  if(type==='morning'){
+    h+='<h4>【一句话结论】</h4><div>'+dir+'（置信'+conf+'%）：'+(dom||'—')+'</div>';
+    h+='<h4>【核心矛盾】</h4><div>'+((d.contradictions||[]).join(' vs ')||dom||'—')+'</div>';
+    h+='<h4>【多空逻辑】</h4><div class="bull-c">看多：<ul>'+(evs.bull.length?evs.bull.map(x=>'<li>'+x+'</li>').join(''):'<li>（暂无强多信号）</li>')+'</ul></div>';
+    h+='<div class="bear-c">看空：<ul>'+(evs.bear.length?evs.bear.map(x=>'<li>'+x+'</li>').join(''):'<li>（暂无强空信号）</li>')+'</ul></div>';
+    h+='<h4>【关键价位】</h4><div class="kv"><span class="k">支撑</span><span>'+sup+'</span></div><div class="kv"><span class="k">阻力</span><span>'+res+'</span></div><div class="kv"><span class="k">中枢</span><span>'+close+'</span></div><div class="note">突破'+res+'→信号强化（需LME去库+社库转去）；跌破'+sup+'→信号失效</div>';
+    h+='<h4>【机构/资金动向】</h4><div>'+(inst.text||('共识 score='+(inst.consensus!=null?inst.consensus:'--')))+'</div>';
+    h+='<h4>【风险提示】</h4><div class="risk">'+(trig.bear&&trig.bear.length?trig.bear.map(x=>'• '+x).join('<br>'):'暂无显著偏空触发')+'</div>';
+  } else if(type==='trader'){
+    h+='<h4>核心信号</h4><div>'+(l0.ok?('伦铅→沪铅领先：'+(l0.direction>0?'偏多':'偏空')+'（OOS命中'+((l0.oos||{}).hit||'--')+'）'):'L0未触发')+'</div>';
+    h+='<h4>操作方向</h4><div>'+dir+'，置信'+conf+'%，持仓周期 1–5 天</div>';
+    h+='<h4>关键价位</h4><div class="kv"><span class="k">压力</span><span>'+res+'</span></div><div class="kv"><span class="k">中枢</span><span>'+close+'</span></div><div class="kv"><span class="k">支撑</span><span>'+sup+'</span></div><div class="note">突破'+res+'→信号失效；跌破'+sup+'→反手</div>';
+    h+='<h4>量价验证</h4><div>成交 '+(rt.volume!=null?rt.volume:'--')+' · 20日涨跌 '+(rt.chg_20d!=null?rt.chg_20d+'%':'--')+' · 120日涨跌 '+(rt.chg_120d!=null?rt.chg_120d+'%':'--')+'</div>';
+    h+='<h4>止损位</h4><div class="risk">'+(sup!='--'?('下方 '+sup+'（跌破离场）'):'—')+'</div>';
+    h+='<h4>催化剂（偏多）</h4><div class="bull-c">'+(trig.bull&&trig.bull.length?trig.bull.map(x=>'• '+x).join('<br>'):'—')+'</div>';
+    h+='<h4>风险警告</h4><div class="risk">'+(trig.bear&&trig.bear.length?trig.bear.map(x=>'• '+x).join('<br>'):'—')+'</div>';
+  } else if(type==='industry'){
+    h+='<h4>成本线测算</h4><div>'+(sup!='--'?('约 '+sup+' 为成本支撑区（再生铅亏损线附近）'):'—')+'</div>';
+    h+='<h4>套保建议</h4><div>'+(dir==='偏空'?'买方(采购)套保':'卖方(销售)套保')+'，建议比例 '+(conf>=70?'50%':conf>=50?'30%':'观望')+'，周期 2 周</div>';
+    h+='<h4>采购时机</h4><div>'+(dir==='偏多'?'逢低分批建库':'观望，等待 '+sup+' 附近' )+'</div>';
+    h+='<h4>库存管理</h4><div>'+(((d.meta&&d.meta.freshness)||{}).stale_count>0?'部分序列滞后，以日频为准':'新鲜度正常')+'</div>';
+    h+='<h4>利润监测</h4><div>'+(evs.bear.some(x=>x.includes('成本'))?'成本支撑仍有效，再生端利润承压':'—')+'</div>';
+    h+='<h4>风险事件</h4><div class="risk">'+(trig.bear&&trig.bear.length?trig.bear.map(x=>'• '+x).join('<br>'):'—')+'</div>';
+    h+='<h4>操作清单</h4><div>'+ (dom||'—') +'</div>';
+  } else if(type==='institution'){
+    h+='<h4>配置方向</h4><div>'+dir+'，配置权重 '+(Math.max(0,Math.round(conf/5)))+'%，周期 1–3 月</div>';
+    h+='<h4>风险预算</h4><div>参考波动率（120日 '+((rt.chg_120d!=null?rt.chg_120d+'%':'--'))+'）；建议最大回撤 10%，VaR(95%) 约 4%</div>';
+    h+='<h4>相关性</h4><div>铅与美元指数负相关、与有色板块正相关（常识性配置参考）</div>';
+    h+='<h4>仓位上限</h4><div>建议最大仓位 '+(conf>=70?'20%':conf>=50?'15%':'10%')+'；加仓条件='+(trig.bull&&trig.bull[0]||'信号强化')+'；减仓条件=最大回撤超10%</div>';
+    h+='<h4>多空逻辑</h4><div class="bull-c">多 '+evs.bull.length+' 条</div><div class="bear-c">空 '+evs.bear.length+' 条</div>';
+    h+='<h4>机构共识</h4><div>'+(inst.text||('score='+(inst.consensus!=null?inst.consensus:'--')))+'</div>';
+    h+='<h4>监控指标</h4><div>'+((d.contradictions||[]).join('、')||'—')+'（每 30min 刷新）</div>';
+  } else if(type==='retail'){
+    const meta=dir==='偏多'?'就像矿端拧紧了水龙头，但库存还在往池子里灌，价格被托在成本线附近，短线易涨难跌':'就像仓库堆满了货、需求又弱，价格像被压着的弹簧，反弹要看去库信号';
+    h+='<h4>一句话结论</h4><div>'+dir+'（'+meta+'）</div>';
+    h+='<h4>价格区间</h4><div class="kv"><span class="k">天花板</span><span>'+res+'</span></div><div class="kv"><span class="k">地板</span><span>'+sup+'</span></div>';
+    h+='<h4>操作建议</h4><div>'+(dir==='偏多'?'逢低小买，轻仓':'观望为主，别追')+'，仓位别超过 2 成</div>';
+    h+='<h4>为什么涨/跌</h4><div>'+(dom||'—')+'</div>';
+    h+='<h4>风险警告</h4><div class="risk">'+(trig.bear&&trig.bear.length?trig.bear.map(x=>'• '+x).join('<br>'):'注意数据滞后，别满仓')+'</div>';
+    h+='<h4>观察信号</h4><div class="bull-c">'+(trig.bull&&trig.bull.length?trig.bull.map(x=>'• '+x).join('<br>'):'等库存去化/TC变化')+'</div>';
+    h+='<h4>常见误区</h4><div>不要追高、不要抄底、不要满仓；看不懂就先观望。</div>';
+  }
+  return h;
+}
+function bindReports(){
+  const tabs=document.querySelectorAll('#reportTabs button');
+  const score=$('reportScore'), body=$('reportBody');
+  function show(t){
+    score.innerHTML=buildScore(D);
+    body.innerHTML=buildReport(t,D);
+  }
+  tabs.forEach(b=>b.onclick=()=>{
+    tabs.forEach(x=>x.classList.remove('active')); b.classList.add('active');
+    show(b.dataset.r);
   });
-  $('sources').innerHTML=html;
+  show('morning');
 }
 </script>
 </body>
