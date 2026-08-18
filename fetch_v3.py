@@ -48,12 +48,26 @@ SF_MODEL = "Qwen/Qwen2.5-14B-Instruct"
 
 
 def get(url, hdr=None, timeout=15):
-    h = {"User-Agent": "Mozilla/5.0"}
+    h = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36",
+        "Accept": "application/json, text/plain, */*",
+        "Referer": "https://zhiji-ai.xyz/",
+        "Origin": "https://zhiji-ai.xyz",
+    }
     if hdr:
         h.update(hdr)
     req = urllib.request.Request(url, headers=h)
-    with urllib.request.urlopen(req, timeout=timeout) as r:
-        return json.loads(r.read())
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            return json.loads(r.read())
+    except urllib.error.HTTPError as e:
+        body = ""
+        try:
+            body = e.read().decode("utf-8", "replace")
+        except Exception:
+            pass
+        print(f"[ZHIJI 403/ERR] url={url} code={e.code} body={body[:300]}")
+        raise
 
 
 def fetch_kline(code, limit=120, timeout=30):
