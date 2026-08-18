@@ -3,18 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>铅(PB) 基本面看板 · 实时</title>
+<title>铅(PB) 基本面看板 · 实时 · L0–L6 全链路</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
   :root{
     --bg:#0f1420; --card:#171e2e; --card2:#1d2740; --line:#2a3550;
     --txt:#e6ecf5; --dim:#8b96ad; --bull:#e8563a; --bear:#2f9e6e;
-    --acc:#f0b90b; --neutral:#8b96ad;
+    --acc:#f0b90b; --neutral:#8b96ad; --layer:#5b8def;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;line-height:1.5;padding:24px}
-  .wrap{max-width:1100px;margin:0 auto}
-  header{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;margin-bottom:8px}
+  body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;line-height:1.55;padding:22px}
+  .wrap{max-width:1180px;margin:0 auto}
+  header{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;margin-bottom:6px}
   h1{font-size:24px;letter-spacing:1px}
   h1 small{color:var(--acc);font-size:14px;font-weight:600}
   .asof{color:var(--dim);font-size:13px}
@@ -22,39 +22,51 @@
   .badge.bull{background:rgba(232,86,58,.15);color:var(--bull);border:1px solid var(--bull)}
   .badge.bear{background:rgba(47,158,110,.15);color:var(--bear);border:1px solid var(--bear)}
   .badge.neutral{background:rgba(139,146,173,.15);color:var(--neutral);border:1px solid var(--neutral)}
-  .sub{color:var(--dim);font-size:13px;margin-bottom:20px}
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-bottom:16px}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
-  .card h3{font-size:13px;color:var(--dim);font-weight:600;margin-bottom:10px;letter-spacing:.5px}
-  .big{font-size:30px;font-weight:800}
-  .num{font-size:22px;font-weight:700}
-  .metric{display:flex;justify-content:space-between;padding:4px 0;font-size:13px;border-bottom:1px dashed var(--line)}
+  .sub{color:var(--dim);font-size:13px;margin-bottom:18px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:14px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px}
+  .card h3{font-size:12px;color:var(--dim);font-weight:600;margin-bottom:8px;letter-spacing:.5px}
+  .big{font-size:28px;font-weight:800}
+  .num{font-size:20px;font-weight:700}
+  .metric{display:flex;justify-content:space-between;padding:3px 0;font-size:12.5px;border-bottom:1px dashed var(--line)}
   .metric:last-child{border-bottom:none}
   .metric .k{color:var(--dim)}
   .metric .v{font-weight:600}
   .up{color:var(--bull)} .down{color:var(--bear)} .flat{color:var(--dim)}
-  .panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:16px}
-  .panel h2{font-size:15px;margin-bottom:12px;color:var(--acc)}
-  pre.verdict{white-space:pre-wrap;font-size:13px;color:var(--txt);font-family:inherit;background:var(--card2);border-radius:8px;padding:14px;max-height:320px;overflow:auto}
-  .tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-  .tag{background:var(--card2);border:1px solid var(--line);border-radius:20px;padding:3px 12px;font-size:12px}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:14px}
+  .panel h2{font-size:15px;margin-bottom:10px;color:var(--acc);display:flex;align-items:center;gap:8px}
+  .panel h2 .lyr{font-size:11px;background:var(--layer);color:#fff;border-radius:5px;padding:1px 7px;font-weight:700}
+  .panel h2 .lyr.c{background:var(--acc)}
+  pre.verdict{white-space:pre-wrap;font-size:12.5px;color:var(--txt);font-family:"Cascadia Code",Consolas,monospace;background:var(--card2);border-radius:8px;padding:13px;max-height:420px;overflow:auto;line-height:1.6}
+  .tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}
+  .tag{background:var(--card2);border:1px solid var(--line);border-radius:20px;padding:3px 11px;font-size:12px}
   .tag.bull{color:var(--bull);border-color:var(--bull)}
   .tag.bear{color:var(--bear);border-color:var(--bear)}
-  .news-item{padding:8px 0;border-bottom:1px dashed var(--line);font-size:13px}
-  .news-item:last-child{border:none}
-  .news-item .t{font-weight:600}
-  .news-item .s{color:var(--dim);font-size:12px;margin-left:6px}
+  .tag.acc{color:var(--acc);border-color:var(--acc)}
+  .sig-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px dashed var(--line);font-size:13px}
+  .sig-row:last-child{border-bottom:none}
+  .sig-row .m{font-weight:600}
+  .sig-row .r{color:var(--dim);font-size:12px;text-align:right;max-width:62%}
   .pill{display:inline-block;font-size:11px;border-radius:4px;padding:1px 7px;margin-right:6px}
   .pill.bull{background:rgba(232,86,58,.15);color:var(--bull)}
   .pill.bear{background:rgba(47,158,110,.15);color:var(--bear)}
   .pill.neutral{background:rgba(139,146,173,.15);color:var(--neutral)}
-  table{width:100%;border-collapse:collapse;font-size:12.5px}
-  th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line)}
+  .news-item{padding:7px 0;border-bottom:1px dashed var(--line);font-size:12.5px}
+  .news-item:last-child{border:none}
+  .news-item .t{font-weight:600}
+  .news-item .s{color:var(--dim);font-size:11.5px;margin-left:6px}
+  table{width:100%;border-collapse:collapse;font-size:12px}
+  th,td{text-align:left;padding:5px 7px;border-bottom:1px solid var(--line)}
   th{color:var(--dim);font-weight:600}
   .stale{color:var(--bull);font-weight:700}
-  .chart-box{height:300px;position:relative}
-  .foot{color:var(--dim);font-size:12px;margin-top:20px;text-align:center}
-  .l0dir{font-size:18px;font-weight:700;margin:6px 0}
+  .chart-box{height:280px;position:relative}
+  .src{font-size:12.5px;padding:8px 0;border-bottom:1px dashed var(--line)}
+  .src:last-child{border:none}
+  .src .n{font-weight:600;color:var(--layer)}
+  .src .d{color:var(--dim);font-size:12px}
+  .foot{color:var(--dim);font-size:12px;margin-top:18px;text-align:center;line-height:1.7}
+  .l0dir{font-size:17px;font-weight:700;margin:5px 0}
+  .note{color:var(--dim);font-size:11.5px;margin-top:6px}
 </style>
 </head>
 <body>
@@ -66,73 +78,95 @@
   </header>
   <div class="sub" id="sub"></div>
 
-  <!-- 价格 + K线 -->
+  <!-- K线 -->
   <div class="panel">
-    <h2>沪铅主力 · 日线</h2>
+    <h2><span class="lyr">行情</span> 沪铅主力 · 日线 (120日)</h2>
     <div class="chart-box"><canvas id="kline"></canvas></div>
   </div>
 
-  <!-- 方向/置信/区间 -->
+  <!-- KPI -->
   <div class="grid">
-    <div class="card">
-      <h3>主方向</h3>
-      <div class="big" id="dir"></div>
-    </div>
-    <div class="card">
-      <h3>置信度</h3>
-      <div class="num" id="conf"></div>
-    </div>
-    <div class="card">
-      <h3>支撑 / 阻力</h3>
-      <div class="num" id="range"></div>
-    </div>
-    <div class="card">
-      <h3>阶段</h3>
-      <div class="num" id="stage"></div>
-    </div>
+    <div class="card"><h3>主方向 (L4裁决)</h3><div class="big" id="dir">--</div></div>
+    <div class="card"><h3>L6 置信度 / 校准</h3><div class="num" id="conf">--</div></div>
+    <div class="card"><h3>支撑 / 阻力</h3><div class="num" id="range">--</div></div>
+    <div class="card"><h3>预期定价阶段</h3><div class="num" id="stage">--</div></div>
+    <div class="card"><h3>L0 领先方向</h3><div class="num" id="l0mini">--</div></div>
   </div>
 
-  <!-- L0 唯一真领先信号 -->
+  <!-- L0 -->
   <div class="panel">
-    <h2>L0 · 已验证领先信号（伦铅→沪铅，OOS 唯一真领先）</h2>
+    <h2><span class="lyr">L0</span> 已验证领先信号（伦铅→沪铅，OOS 唯一真领先）</h2>
     <div class="l0dir" id="l0dir"></div>
-    <div id="l0meta" style="font-size:13px;color:var(--dim)"></div>
+    <div id="l0meta" style="font-size:12.5px;color:var(--dim)"></div>
     <div class="tags" id="l0tags"></div>
   </div>
 
-  <!-- L4 仲裁裁决 -->
+  <!-- L1 -->
   <div class="panel">
-    <h2>L4 仲裁裁决（同花顺 4 层优先级 + 时间维度横切）</h2>
+    <h2><span class="lyr">L1</span> 行情确定性画像（auto_profile，零品种逻辑统计）</h2>
+    <div id="l1"></div>
+  </div>
+
+  <!-- L2 -->
+  <div class="panel">
+    <h2><span class="lyr">L2</span> 数据治理 · 时效审计（逐序列新鲜度）</h2>
+    <table><thead><tr><th>序列</th><th>频率</th><th>最新日期</th><th>滞后</th><th>状态</th></tr></thead>
+    <tbody id="freshBody"></tbody></table>
+    <div class="note">铁律：判当日方向优先用最新鲜序列(日/周)；滞后月度序列只取趋势与绝对水平参考，不单独判方向。</div>
+  </div>
+
+  <!-- L3 -->
+  <div class="panel">
+    <h2><span class="lyr">L3</span> 信号打分明细（逐条命中 · 非抵消）</h2>
+    <div id="l3"></div>
+  </div>
+
+  <!-- L4 -->
+  <div class="panel">
+    <h2><span class="lyr">L4</span> 仲裁裁决（同花顺 4 层优先级 + 时间维度横切）</h2>
+    <div id="l4head" style="font-size:14px;font-weight:700;margin-bottom:8px"></div>
     <pre class="verdict" id="verdict"></pre>
     <div class="tags" id="contradTags"></div>
   </div>
 
-  <!-- 矛盾命中明细 -->
-  <div class="grid">
-    <div class="card">
-      <h3>命中矛盾</h3>
-      <div id="contrads"></div>
-    </div>
-    <div class="card">
-      <h3>机构观点近似共识</h3>
-      <div id="inst"></div>
+  <!-- 触发条件 -->
+  <div class="panel">
+    <h2><span class="lyr c">★</span> 强化 / 证伪信号（triggers）</h2>
+    <div class="grid">
+      <div class="card"><h3>偏多触发</h3><div id="trigBull" style="font-size:13px"></div></div>
+      <div class="card"><h3>偏空触发</h3><div id="trigBear" style="font-size:13px"></div></div>
     </div>
   </div>
 
-  <!-- 新闻 -->
+  <!-- L5 -->
   <div class="panel">
-    <h2>新闻（72h）</h2>
+    <h2><span class="lyr">L5</span> 新闻分桶 + 机构近似共识</h2>
     <div id="news"></div>
+    <div id="inst" style="margin-top:10px;font-size:12.5px;color:var(--txt);white-space:pre-wrap;background:var(--card2);border-radius:8px;padding:11px"></div>
   </div>
 
-  <!-- 数据时效 -->
+  <!-- L6 -->
   <div class="panel">
-    <h2>数据时效</h2>
-    <table><thead><tr><th>序列</th><th>最新日期</th><th>滞后</th><th>状态</th></tr></thead>
-    <tbody id="freshBody"></tbody></table>
+    <h2><span class="lyr">L6</span> 校准与置信（规则引擎可复现性）</h2>
+    <div id="l6" style="font-size:13px"></div>
   </div>
 
-  <div class="foot">铅基本面看板 · 由 assemble_dashboard.py 生成 · L3打分+L4仲裁+L5新闻 · 数据源 zhiji</div>
+  <!-- 完整分析正文 -->
+  <div class="panel">
+    <h2><span class="lyr c">全文</span> 完整分析正文（引擎生成的 L0–L6 叙述 + 数据来源）</h2>
+    <pre class="verdict" id="fulltext"></pre>
+  </div>
+
+  <!-- 数据来源 -->
+  <div class="panel">
+    <h2><span class="lyr">源</span> 数据源清单（zhiji 观 / 料 / 讯）</h2>
+    <div id="sources"></div>
+  </div>
+
+  <div class="foot">
+    铅基本面看板 · 由 assemble_dashboard.py 生成 · L0领先+L1画像+L2治理+L3打分+L4仲裁+L5新闻+L6校准<br>
+    数据源 zhiji（观=行情 / 料=基本面序列 / 讯=新闻）· 每 30 分钟自动刷新
+  </div>
 </div>
 
 <script>
@@ -142,20 +176,22 @@ const DIR={bull:{txt:"偏多",cls:"bull"},bear:{txt:"偏空",cls:"bear"},neutral
 
 fetch('data.json').then(r=>r.json()).then(d=>{
   renderHeader(d); renderKline(d); renderCards(d); renderL0(d);
-  renderVerdict(d); renderNews(d); renderFresh(d);
+  renderL1(d); renderL2(d); renderL3(d); renderL4(d); renderTriggers(d);
+  renderL5(d); renderL6(d); renderFull(d); renderSources(d);
 }).catch(e=>{$('sub').textContent='加载失败: '+e;});
 
 function dirInfo(dir){
   if(!dir) return DIR.neutral;
+  if(typeof dir==='number') return dir>0?DIR.bull:dir<0?DIR.bear:DIR.neutral;
   if(dir.includes('多')) return DIR.bull;
   if(dir.includes('空')) return DIR.bear;
   return DIR.neutral;
 }
 function renderHeader(d){
-  $('asof').textContent='数据截至 '+d.meta.data_as_of;
+  $('asof').textContent='数据截至 '+(d.meta?d.meta.data_as_of:d.data_as_of||'--');
   const info=dirInfo(d.analysis.direction);
   const b=$('dirBadge'); b.textContent=info.txt; b.className='badge '+info.cls;
-  $('sub').textContent='引擎版本 '+d.meta.engine_version+' · 时效 正常';
+  $('sub').textContent='引擎版本 '+(d.meta?d.meta.engine_version:'')+' · 数据源 zhiji(观/料/讯) · 每30分钟自动刷新';
 }
 function renderKline(d){
   const pts=d.realtime.kline||[];
@@ -173,42 +209,95 @@ function renderKline(d){
 function renderCards(d){
   const a=d.analysis;
   $('dir').textContent=a.direction; $('dir').className='big '+dirInfo(a.direction).cls;
-  $('conf').textContent=a.confidence_pct+'%';
+  $('conf').textContent=(a.confidence_pct!=null?a.confidence_pct+'%':'--');
   $('range').textContent=(a.range?a.range.support+' / '+a.range.resist:'--');
   $('stage').textContent=a.stage||'--';
+  const l0=d.l0||{};
+  $('l0mini').textContent=(l0.ok?(l0.direction>0?'偏多':l0.direction<0?'偏空':'中性'):'--');
+  $('l0mini').className='num '+dirInfo(l0.direction).cls;
 }
 function renderL0(d){
   const l0=d.l0||{};
   if(l0.ok){
     $('l0dir').textContent=l0.text||'--';
     $('l0dir').className='l0dir '+dirInfo(l0.direction).cls;
-    $('l0meta').innerHTML='LME 40日zscore='+(l0.driver_zscore??'--')+
-      ' · 120日同期相关='+(l0.sync_corr_120d??'--')+
-      ' · 信号日 '+ (l0.as_of||'--')+
-      '<br>OOS命中 '+l0.oos.hit+' · 二项p='+l0.oos.p+' · 净收益+'+l0.oos.net_return_pct+'% · 夏普'+l0.oos.sharpe;
-    const t=$('l0tags'); t.innerHTML='';
-    t.innerHTML='<span class="tag">'+l0.params+'</span>';
+    const o=l0.oos||{};
+    $('l0meta').innerHTML='LME 40日zscore='+(l0.driver_zscore!=null?l0.driver_zscore:'--')+
+      ' · 120日同期相关='+(l0.sync_corr_120d!=null?l0.sync_corr_120d:'--')+
+      ' · 信号日 '+(l0.as_of||'--')+
+      '<br>OOS命中 '+(o.hit!=null?o.hit:'--')+' · 二项p='+(o.p!=null?o.p:'--')+
+      ' · 净收益+'+(o.net_return_pct!=null?o.net_return_pct:'--')+'% · 夏普'+(o.sharpe!=null?o.sharpe:'--');
+    const t=$('l0tags'); t.innerHTML='<span class="tag acc">'+(l0.params||'')+'</span>';
   } else {
-    $('l0dir').textContent='无数据';
-    $('l0meta').textContent='无法计算 L0 信号';
+    $('l0dir').textContent='无数据'; $('l0meta').textContent='无法计算 L0 信号';
   }
 }
-function renderVerdict(d){
-  $('verdict').textContent=d.analysis.dominant_contradiction||'--';
+function renderL1(d){
+  const l1=d.l1||{};
+  const items=l1.key_indicators||[];
+  if(!items.length){$('l1').innerHTML='<div class="note">无画像数据</div>';return;}
+  let html='';
+  items.forEach(p=>{
+    const sig=p.signal||'中性';
+    const cls=sig.includes('多')?'up':sig.includes('空')?'down':'flat';
+    html+='<div class="sig-row"><span class="m">'+p.name+
+      ' <span class="'+cls+'">['+sig+']</span></span>'+
+      '<span class="r">现值 '+p.last+' · z='+p.z_score+' · 趋势 '+(p.trend_pct!=null?p.trend_pct+'%':'--')+
+      ' · 波动 '+(p.vol_daily_pct!=null?p.vol_daily_pct+'%':'--')+'</span></div>';
+  });
+  $('l1').innerHTML=html;
+}
+function renderL2(d){
+  const f=(d.meta&&d.meta.freshness)||{};
+  const body=$('freshBody');
+  let html='';
+  (f.series||[]).forEach(s=>{
+    html+='<tr><td>'+s.label+'</td><td>'+(s.freq||'')+'</td><td>'+(s.latest_date||'--')+'</td><td>'+
+      (s.staleness_days!=null?s.staleness_days+'天':'--')+'</td>'+
+      '<td class="'+(s.stale?'stale':'flat')+'">'+(s.stale?'滞后':'正常')+'</td></tr>';
+  });
+  body.innerHTML=html||'<tr><td colspan=5>--</td></tr>';
+}
+function renderL3(d){
+  const ev=d.analysis.evidence||[];
+  if(!ev.length){$('l3').innerHTML='<div class="note">无命中信号</div>';return;}
+  let html='';
+  ev.forEach(e=>{
+    const isBull=e.value.includes('dir=+1');
+    const isBear=e.value.includes('dir=-1');
+    const cls=isBull?'up':isBear?'down':'flat';
+    // 解析 read 中的多空词
+    const tagRead=(e.read||'').match(/^(多|空|中性)\s*/);
+    const word=tagRead?tagRead[1]:'';
+    html+='<div class="sig-row"><span class="m">'+e.metric+
+      ' <span class="pill '+(isBull?'bull':isBear?'bear':'neutral')+'">'+(word||'')+'</span></span>'+
+      '<span class="r '+cls+'">'+e.read+'</span></div>';
+  });
+  $('l3').innerHTML=html;
+}
+function renderL4(d){
+  const a=d.analysis;
+  $('l4head').textContent=a.dominant_contradiction||'--';
+  const ce=a.card_engine||{};
+  $('verdict').textContent=ce.verdict||'(无仲裁文本)';
   const tags=$('contradTags'); tags.innerHTML='';
   (d.contradictions||[]).forEach(c=>{
-    const tag=document.createElement('span');
-    tag.className='tag'; tag.textContent=c;
-    tags.appendChild(tag);
+    const tag=document.createElement('span'); tag.className='tag'; tag.textContent=c; tags.appendChild(tag);
   });
-  const ce=d.analysis.card_engine||{};
-  if(ce.active){const t=document.createElement('span');t.className='tag bull';t.textContent='得分 '+ce.score+' · 仲裁 '+ce.arbiter;tags.appendChild(t);}
+  if(ce.active){const t=document.createElement('span');t.className='tag acc';t.textContent='得分 '+ce.score+' · 仲裁 '+ce.arbiter;tags.appendChild(t);}
 }
-function renderNews(d){
+function renderTriggers(d){
+  const tr=(d.analysis.triggers)||{};
+  const bb=(tr.bull||[]).map(x=>'• '+x).join('<br>')||'—';
+  const br=(tr.bear||[]).map(x=>'• '+x).join('<br>')||'—';
+  $('trigBull').innerHTML='<span class="up">'+bb+'</span>';
+  $('trigBear').innerHTML='<span class="down">'+br+'</span>';
+}
+function renderL5(d){
   const box=$('news');
   const order=['key_bull','key_bear','key_neutral','bull','bear','neutral'];
   const map={key_bull:['关键利多','bull'],key_bear:['关键利空','bear'],key_neutral:['关键中性','neutral'],bull:['利多','bull'],bear:['利空','bear'],neutral:['中性','neutral']};
-  const stMap={1:'bull',0:'neutral','-1':'bear'}; // sentiment 为数字：1=正/多,0=中性,-1=负/空
+  const stMap={1:'bull',0:'neutral','-1':'bear'};
   let html='';
   order.forEach(k=>{ const grp=d.news[k]; if(!grp||!grp.items||!grp.items.length) return;
     html+='<div class="pill '+map[k][1]+'">'+map[k][0]+' ('+grp.count+')</div>';
@@ -218,17 +307,32 @@ function renderNews(d){
       html+='<div class="news-item"><span class="pill '+s+'">'+lbl+'</span><span class="t">'+n.title+'</span><span class="s">'+n.source+' · '+n.time+'</span></div>';
     });
   });
-  box.innerHTML=html||'<div style="color:var(--dim)">无新闻</div>';
+  box.innerHTML=html||'<div style="color:var(--dim)">近72h无铅相关新闻</div>';
+  const inst=d.institution||{};
+  $('inst').textContent=inst.text||('机构共识 score='+(inst.consensus!=null?inst.consensus:'--'));
 }
-function renderFresh(d){
-  const body=$('freshBody');
-  const f=d.meta.freshness||{};
+function renderL6(d){
+  const a=d.analysis;
+  const l0=d.l0||{};
   let html='';
-  (f.series||[]).forEach(s=>{
-    html+='<tr><td>'+s.label+'</td><td>'+(s.latest_date||'--')+'</td><td>'+(s.staleness_days!=null?s.staleness_days+'天':'--')+'</td>'+
-      '<td class="'+(s.stale?'stale':'flat')+'">'+(s.stale?'滞后':'正常')+'</td></tr>';
+  html+='<div class="sig-row"><span class="m">规则引擎裁决置信</span><span class="r">'+(a.confidence_pct!=null?a.confidence_pct+'%':'--')+'（L4仲裁确定性）</span></div>';
+  html+='<div class="sig-row"><span class="m">L0 领先信号 OOS 验证</span><span class="r">命中 '+(l0.oos?l0.oos.hit:'--')+' · 二项p '+(l0.oos?l0.oos.p:'--')+' · 夏普 '+(l0.oos?l0.oos.sharpe:'--')+'</span></div>';
+  html+='<div class="sig-row"><span class="m">数据时效</span><span class="r">'+((d.meta&&d.meta.freshness)?(d.meta.freshness.stale_count+' 条滞后 / 共 '+(d.meta.freshness.series||[]).length+' 序列'):'--')+'</span></div>';
+  html+='<div class="note">校准原则：裁决为硬编码可复现（非LLM主观）。L0为唯一经OOS验证的真领先信号；其余人类叙事关系多数OOS≤0.5（共动非因果），已据实剔除，不作领先驱动。</div>';
+  $('l6').innerHTML=html;
+}
+function renderFull(d){
+  const t=(d.prompt_data&&d.prompt_data.user)||'';
+  $('fulltext').textContent=t||'(无分析正文)';
+}
+function renderSources(d){
+  const srcs=d.data_sources||[];
+  if(!srcs.length){$('sources').innerHTML='<div class="note">未提供数据源清单</div>';return;}
+  let html='';
+  srcs.forEach(s=>{
+    html+='<div class="src"><span class="n">['+s.layer+'] '+s.name+'</span><br><span class="d">'+s.detail+'</span></div>';
   });
-  body.innerHTML=html||'<tr><td colspan=4>--</td></tr>';
+  $('sources').innerHTML=html;
 }
 </script>
 </body>
