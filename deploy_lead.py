@@ -35,7 +35,8 @@ REPOS_API = "https://api.github.com/user/repos"
 LOCAL_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 # .gitignore 对应要跳过的路径（与 .gitignore 保持一致）
-IGNORE_DIRS = {"__pycache__", ".pytest_cache", "venv", ".git", ".github"}
+# 注意：.github 必须保留（workflow 是部署核心），不能忽略
+IGNORE_DIRS = {"__pycache__", ".pytest_cache", "venv", ".git"}
 IGNORE_FILES = {"pb_input.json", "pb_output_rule.json", "predictions.json"}
 
 # 明确要上传的顶层文件（白名单优先于黑名单，排除临时产物）
